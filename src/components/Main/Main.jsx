@@ -1,34 +1,56 @@
+
+import { useState, useEffect } from "react";
 import Column from "../Column/Column";
+import cards from "../../../data";
 
 const columns = [
-  { title: "Без статуса", cards: [
-    { category: "Web Design", color: "orange" },
-    { category: "Research", color: "green" },
-    { category: "Web Design", color: "orange" },
-    { category: "Copywriting", color: "purple" },
-    { category: "Web Design", color: "orange" }
-  ]},
-  { title: "Нужно сделать", cards: [{ category: "Research", color: "green" }] },
-  { title: "В работе", cards: [
-    { category: "Research", color: "green" },
-    { category: "Copywriting", color: "purple" },
-    { category: "Web Design", color: "orange" }
-  ]},
-  { title: "Тестирование", cards: [{ category: "Research", color: "green" }] },
-  { title: "Готово", cards: [{ category: "Research", color: "green" }] }
+  { title: "Без статуса" },
+  { title: "Нужно сделать" },
+  { title: "В работе" },
+  { title: "Тестирование" },
+  { title: "Готово" },
 ];
 
 function Main() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <main className="main">
       <div className="container">
         <div className="main__block">
-          <div className="main__content">
-            {columns.map((column) => <Column key={column.title} {...column} />)}
-          </div>
+          {isLoading ? (
+            <div className="loading">
+              Данные загружаются
+            </div>
+          ) : (
+            <div className="main__content">
+              {columns.map((column) => {
+                const filteredCards = cards.filter(
+                  (card) => card.status === column.title
+                );
+
+                return (
+                  <Column
+                    key={column.title}
+                    title={column.title}
+                    cards={filteredCards}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </main>
   );
 }
+
 export default Main;
